@@ -1,6 +1,3 @@
-Here’s a comprehensive and nicely formatted README.md file for your website:
-
-```markdown
 # Odoo X MSU 🚀
 
 ## Introduction 💡
