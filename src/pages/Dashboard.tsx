@@ -11,6 +11,7 @@ import DashboardLayout from '@/components/dashboard/DashboardLayout';
 import { motion } from 'framer-motion';
 import { getFirestore, collection, query, where, getDocs } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
+import { db } from '@/lib/firebase';
 
 const cardVariants = {
   hidden: { opacity: 0, y: 20 },
@@ -32,6 +33,28 @@ const Dashboard = () => {
   const [invitationCount, setInvitationCount] = useState(0);
   const [messageCount, setMessageCount] = useState(0);
   const [userCount, setUserCount] = useState(0);
+
+  const [collaborators, setCollaborators] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchCollaborators = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, "collaborators"));
+        const collaboratorsList = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setCollaborators(collaboratorsList);  // Set the state with fetched collaborators
+      } catch (error) {
+        console.error("Error fetching collaborators: ", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    fetchCollaborators();
+  }, []);  
 
   const { data: myInvestments = [], isLoading: investmentsLoading } = useQuery<UserIPO[]>({
     queryKey: ['myInvestments'],
@@ -288,72 +311,70 @@ const Dashboard = () => {
                   </TabsContent>
 
                   <TabsContent value="collaborations" className="space-y-5 mt-4">
-                    {collaborationsLoading ? (
-                      <div className="flex justify-center py-12">
-                        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary"></div>
-                      </div>
-                    ) : collaborations.length > 0 ? (
-                      collaborations.slice(0, 2).map((collab, index) => (
-                        <motion.div
-                          key={collab.id}
-                          custom={index}
-                          initial="hidden"
-                          animate="visible"
-                          variants={cardVariants}
-                        >
-                          <Card className="bg-white dark:bg-gray-800 hover:shadow-md transition-all duration-300">
-                            <CardContent className="p-6">
-                              <div className="flex justify-between items-center mb-4">
-                                <div>
-                                  <h3 className="font-semibold">{collab.ipoName}</h3>
-                                  <p className="text-sm text-muted-foreground">{collab.ipoSymbol} • {collab.status}</p>
-                                </div>
-                                <div className="text-lg font-semibold">
-                                  {collab.totalAmount}
-                                </div>
-                              </div>
+  {collaborationsLoading ? (
+    <div className="flex justify-center py-12">
+      <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary"></div>
+    </div>
+  ) : collaborations.length > 0 ? (
+    collaborations.slice(0, 2).map((collab, index) => (
+      <motion.div
+        key={collab.id}
+        custom={index}
+        initial="hidden"
+        animate="visible"
+        variants={cardVariants}
+      >
+        <Card className="bg-white dark:bg-gray-800 hover:shadow-md transition-all duration-300">
+          <CardContent className="p-6">
+            <div className="flex justify-between items-center mb-4">
+              <div>
+                <h3 className="font-semibold">{collab.ipoName}</h3>
+                <p className="text-sm text-muted-foreground">{collab.ipoSymbol} • {collab.status}</p>
+              </div>
+              <div className="text-lg font-semibold">
+                {collab.totalAmount}
+              </div>
+            </div>
 
-                              <div className="flex flex-wrap gap-2 mb-4">
-                                {collab.collaborators.map((user, i) => (
-                                  <div key={user.id} className="flex items-center bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded-full text-sm">
-                                    <span className="w-5 h-5 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs mr-1">
-                                      {user.name[0]}
-                                    </span>
-                                    {user.name}
-                                  </div>
-                                ))}
-                              </div>
+            {collaborators.map((user) => (
+              <div key={user.id} className="flex items-center bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded-full text-sm">
+                <span className="w-5 h-5 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs mr-1">
+                  {user.name ? user.name[0] : "?"}
+                </span>
+                {user.name}
+              </div>
+            ))}
+            <div className="flex justify-end space-x-3">
+              <Button variant="outline" size="sm" className="flex items-center">
+                <MessageSquare size={14} className="mr-1" /> Chat
+              </Button>
+              <Button size="sm">Details</Button>
+            </div>
+          </CardContent>
+        </Card>
+      </motion.div>
+    ))
+  ) : (
+    <div className="text-center py-12 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
+      <p className="text-muted-foreground">You don't have any active collaborations.</p>
+      <Button className="mt-4">
+        <Link to="/ipo-listings">Find Collaborators</Link>
+      </Button>
+    </div>
+  )}
 
-                              <div className="flex justify-end space-x-3">
-                                <Button variant="outline" size="sm" className="flex items-center">
-                                  <MessageSquare size={14} className="mr-1" /> Chat
-                                </Button>
-                                <Button size="sm">Details</Button>
-                              </div>
-                            </CardContent>
-                          </Card>
-                        </motion.div>
-                      ))
-                    ) : (
-                      <div className="text-center py-12 bg-gray-50 dark:bg-gray-800/50 rounded-lg">
-                        <p className="text-muted-foreground">You don't have any active collaborations.</p>
-                        <Button className="mt-4">
-                          <Link to="/ipo-listings">Find Collaborators</Link>
-                        </Button>
-                      </div>
-                    )}
+  {collaborations.length > 2 && (
+    <div className="text-center mt-4">
+      <Link to="/dashboard/collaborations">
+        <Button variant="outline" className="w-full">
+          View all collaborations ({collaborations.length})
+          <ChevronRight size={16} className="ml-1" />
+        </Button>
+      </Link>
+    </div>
+  )}
+</TabsContent>
 
-                    {collaborations.length > 2 && (
-                      <div className="text-center mt-4">
-                        <Link to="/dashboard/collaborations">
-                          <Button variant="outline" className="w-full">
-                            View all collaborations ({collaborations.length})
-                            <ChevronRight size={16} className="ml-1" />
-                          </Button>
-                        </Link>
-                      </div>
-                    )}
-                  </TabsContent>
 
                   <TabsContent value="notifications" className="space-y-4 mt-4">
                     {notificationsLoading ? (

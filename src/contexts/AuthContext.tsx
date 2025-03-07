@@ -7,6 +7,7 @@ import { auth, collection, db } from '@/lib/firebase'; // Import Firebase auth
 import { doc, setDoc } from 'firebase/firestore';
 
 interface User {
+  find(arg0: (user: any) => boolean): unknown;
   id: string;
   name?: string;
   email: string;

@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 export interface IPO {
   id: string;
   name: string;
@@ -29,9 +31,9 @@ export interface IPO {
 }
 
 export interface UserIPO extends IPO {
-  ipoId: ReactNode;
-  ipoName: ReactNode;
-  amount: ReactNode;
+  ipoId: string;
+  ipoName: string;
+  amount: number;
   timestamp: any;
   yourInvestment: string;
   allotmentStatus: string;
@@ -62,6 +64,7 @@ export interface IPODetail extends IPO {
 }
 
 export interface Collaborator {
+  collaborator: CollaboratorDetails;
   id: string;
   name: string;
   email: string;
@@ -69,7 +72,15 @@ export interface Collaborator {
   mutualConnections?: number;
 }
 
+export interface CollaboratorDetails {
+  id: string;
+  name: string;
+  email: string;
+  avatar?: string;
+}
+
 export interface Collaboration {
+  userId: any;
   id: string;
   ipoName: string;
   ipoSymbol: string;
@@ -83,4 +94,12 @@ export interface Notification {
   message: string;
   time: string;
   read: boolean;
+}
+
+export interface Invitation {
+  id: string;
+  senderId: string;
+  receiverId: string;
+  status: 'pending' | 'accepted' | 'rejected';
+  // Add any other properties that are relevant
 }

@@ -138,7 +138,7 @@ const IPOCard: React.FC<IPOCardProps> = ({
           </Button>
           <Button
             onClick={() => setShowCollaborationModal(true)}  // Trigger collaboration popup
-            className="text-sm font-medium bg-secondary text-white hover:bg-secondary/80"
+            className="text-sm font-medium bg-sky-600 text-white hover:bg-sky-700"
           >
             Collaborate
           </Button>
