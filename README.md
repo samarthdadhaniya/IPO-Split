@@ -12,7 +12,6 @@ Welcome to **Odoo X MSU**, a platform designed to bridge the gap between capital
 - **Multiple PAN Applications**: Users can apply for IPOs using multiple PAN accounts, improving their chances of allotment.  
 - **Dynamic Matching Algorithm**: A smart algorithm that automatically pairs investors with users based on preferences, funds, and availability.  
 - **Real-Time IPO Updates**: Provides up-to-date information on IPO listings, deadlines, and statuses.  
-- **Choice-Based Matching System**: Efficiently matches investors with suitable users and PAN holders for optimized IPO applications.
 
 ---
 
@@ -26,9 +25,6 @@ Welcome to **Odoo X MSU**, a platform designed to bridge the gap between capital
 - **Backend**:
   - Node.js with Express.js 🌐
   - PostgreSQL (Primary) + Redis (Caching) 🗄️
-
-- **Deployment & Infrastructure**:
-  - Cloud Provider: AWS ☁️
 
 ---
 
@@ -48,14 +44,12 @@ Welcome to **Odoo X MSU**, a platform designed to bridge the gap between capital
 
 Here are some screenshots of the platform:
 
-![Homepage](path_to_image1.jpg)
-*The homepage with IPO listings and partnership options.*
+![Website](./src/images/1.png)
+![Website](./src/images/2.png)
+![Website](./src/images/3.png)
+![Website](./src/images/4.png)
+![Website](./src/images/5.png)
 
-![Dashboard](path_to_image2.jpg)
-*The user dashboard showing past investments and performance metrics.*
-
-![IPO Details](path_to_image3.jpg)
-*Detailed IPO view with real-time updates and partnership options.*
 
 ---
 
